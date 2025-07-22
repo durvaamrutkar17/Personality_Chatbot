@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personality Chatbot</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center p-6">
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
 
-  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6 relative">
-    <h1 class="text-3xl font-bold text-center text-purple-700">Personality Chatbot</h1>
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-4 sm:p-6 space-y-6 relative">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center text-purple-700">Personality Chatbot</h1>
 
     <!-- Spinner -->
     <div id="spinner" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 hidden rounded-2xl">
-      <div class="w-16 h-16 border-4 border-purple-500 border-dashed rounded-full animate-spin"></div>
+      <div class="w-12 h-12 sm:w-16 sm:h-16 border-4 border-purple-500 border-dashed rounded-full animate-spin"></div>
     </div>
 
     {% if not questions and not profile %}
       <form method="post" class="space-y-4" id="intro-form">
-        <label class="block text-lg font-medium text-gray-700">Tell me about yourself:</label>
-        <textarea name="intro" placeholder="I'm quiet, love books, and enjoy nature..." required class="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"></textarea>
-        <button type="submit" class="w-full py-3 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition">Start</button>
+        <label class="block text-base sm:text-lg font-medium text-gray-700">Tell me about yourself:</label>
+        <textarea name="intro" placeholder="I'm quiet, love books, and enjoy nature..." required class="w-full h-28 sm:h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"></textarea>
+        <button type="submit" class="w-full py-2 sm:py-3 bg-purple-600 text-white rounded-lg text-base sm:text-lg font-semibold hover:bg-purple-700 transition">Start</button>
       </form>
       <script>
         document.getElementById('intro-form').addEventListener('submit', function() {
@@ -30,7 +31,7 @@
       <form method="post" action="/submit" class="space-y-4" id="chat-form">
         <input type="hidden" name="intro" value="{{ intro }}">
         <div id="chat-box" class="space-y-4"></div>
-        <button type="submit" id="submit-button" class="w-full py-3 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition hidden">Get Personality Profile</button>
+        <button type="submit" id="submit-button" class="w-full py-2 sm:py-3 bg-purple-600 text-white rounded-lg text-base sm:text-lg font-semibold hover:bg-purple-700 transition hidden">Get Personality Profile</button>
       </form>
 
       <script>
@@ -68,30 +69,30 @@
             q = q.replace(/[\[\]\(\)\"\'\,]/g, '');
 
             const questionDiv = document.createElement('div');
-            questionDiv.className = 'bg-purple-100 p-4 rounded-xl shadow-sm space-y-3';
+            questionDiv.className = 'bg-purple-100 p-3 sm:p-4 rounded-xl shadow-sm space-y-3';
             questionDiv.innerHTML = `
-              <label class="block text-lg font-medium text-gray-700">${currentIndex + 1}. ${q}</label>
+              <label class="block text-base sm:text-lg font-medium text-gray-700">${currentIndex + 1}. ${q}</label>
               <input type="hidden" name="questions" value="${q}">
               <div class="space-y-2">
                 <label class="flex items-center space-x-3">
                   <input type="radio" name="answer_${currentIndex}" value="Strongly Disagree" required class="text-purple-600">
-                  <span>Strongly Disagree</span>
+                  <span class="text-sm sm:text-base">Strongly Disagree</span>
                 </label>
                 <label class="flex items-center space-x-3">
                   <input type="radio" name="answer_${currentIndex}" value="Disagree" class="text-purple-600">
-                  <span>Disagree</span>
+                  <span class="text-sm sm:text-base">Disagree</span>
                 </label>
                 <label class="flex items-center space-x-3">
                   <input type="radio" name="answer_${currentIndex}" value="Neutral" class="text-purple-600">
-                  <span>Neutral</span>
+                  <span class="text-sm sm:text-base">Neutral</span>
                 </label>
                 <label class="flex items-center space-x-3">
                   <input type="radio" name="answer_${currentIndex}" value="Agree" class="text-purple-600">
-                  <span>Agree</span>
+                  <span class="text-sm sm:text-base">Agree</span>
                 </label>
                 <label class="flex items-center space-x-3">
                   <input type="radio" name="answer_${currentIndex}" value="Strongly Agree" class="text-purple-600">
-                  <span>Strongly Agree</span>
+                  <span class="text-sm sm:text-base">Strongly Agree</span>
                 </label>
               </div>
             `;
@@ -120,9 +121,9 @@
 
     {% elif profile %}
       <div class="space-y-4 text-center">
-        <h2 class="text-2xl font-semibold text-purple-700">Your Personality Profile</h2>
-        <p class="text-lg text-gray-700">{{ profile }}</p>
-        <a href="/" class="inline-block mt-4 py-3 px-6 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition">Start Over</a>
+        <h2 class="text-xl sm:text-2xl font-semibold text-purple-700">Your Personality Profile</h2>
+        <p class="text-base sm:text-lg text-gray-700">{{ profile }}</p>
+        <a href="/" class="inline-block mt-4 py-2 sm:py-3 px-4 sm:px-6 bg-purple-600 text-white rounded-lg text-base sm:text-lg font-semibold hover:bg-purple-700 transition">Start Over</a>
       </div>
     {% endif %}
   </div>
