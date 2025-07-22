@@ -35,6 +35,6 @@ def generate_personality_profile(user_intro, qa_pairs):
     
     Personality Profile:
     """
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-2.5-flash')
     response = model.generate_content(prompt)
     return response.text.strip()
