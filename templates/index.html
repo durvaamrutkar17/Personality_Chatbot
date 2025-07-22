@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personality Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center p-6">
+
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6 relative">
+    <h1 class="text-3xl font-bold text-center text-purple-700">Personality Chatbot</h1>
+
+    <!-- Spinner -->
+    <div id="spinner" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 hidden rounded-2xl">
+      <div class="w-16 h-16 border-4 border-purple-500 border-dashed rounded-full animate-spin"></div>
+    </div>
+
+    {% if not questions and not profile %}
+      <form method="post" class="space-y-4" id="intro-form">
+        <label class="block text-lg font-medium text-gray-700">Tell me about yourself:</label>
+        <textarea name="intro" placeholder="I'm quiet, love books, and enjoy nature..." required class="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"></textarea>
+        <button type="submit" class="w-full py-3 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition">Start</button>
+      </form>
+      <script>
+        document.getElementById('intro-form').addEventListener('submit', function() {
+          document.getElementById('spinner').classList.remove('hidden');
+        });
+      </script>
+    {% elif questions %}
+      <form method="post" action="/submit" class="space-y-4" id="chat-form">
+        <input type="hidden" name="intro" value="{{ intro }}">
+        <div id="chat-box" class="space-y-4"></div>
+        <button type="submit" id="submit-button" class="w-full py-3 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition hidden">Get Personality Profile</button>
+      </form>
+
+      <script>
+        const questions = {{ questions | tojson }};
+        let currentIndex = 0;
+
+        const chatBox = document.getElementById('chat-box');
+        const form = document.getElementById('chat-form');
+        const submitButton = document.getElementById('submit-button');
+        const spinner = document.getElementById('spinner');
+
+        function toggleSpinner(show) {
+          spinner.classList.toggle('hidden', !show);
+        }
+
+        function scrollToBottom() {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showNextQuestion() {
+          if (currentIndex >= questions.length) {
+            submitButton.classList.remove('hidden');
+            toggleSpinner(false);
+            scrollToBottom();
+            return;
+          }
+
+          toggleSpinner(true);
+          setTimeout(() => {
+            let q = questions[currentIndex];
+            q = q.replace(/[\[\]\(\)\"\'\,]/g, '');
+
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'bg-purple-100 p-4 rounded-xl shadow-sm space-y-3';
+            questionDiv.innerHTML = `
+              <label class="block text-lg font-medium text-gray-700">${currentIndex + 1}. ${q}</label>
+              <input type="hidden" name="questions" value="${q}">
+              <div class="space-y-2">
+                <label class="flex items-center space-x-3">
+                  <input type="radio" name="answer_${currentIndex}" value="Strongly Disagree" required class="text-purple-600">
+                  <span>Strongly Disagree</span>
+                </label>
+                <label class="flex items-center space-x-3">
+                  <input type="radio" name="answer_${currentIndex}" value="Disagree" class="text-purple-600">
+                  <span>Disagree</span>
+                </label>
+                <label class="flex items-center space-x-3">
+                  <input type="radio" name="answer_${currentIndex}" value="Neutral" class="text-purple-600">
+                  <span>Neutral</span>
+                </label>
+                <label class="flex items-center space-x-3">
+                  <input type="radio" name="answer_${currentIndex}" value="Agree" class="text-purple-600">
+                  <span>Agree</span>
+                </label>
+                <label class="flex items-center space-x-3">
+                  <input type="radio" name="answer_${currentIndex}" value="Strongly Agree" class="text-purple-600">
+                  <span>Strongly Agree</span>
+                </label>
+              </div>
+            `;
+
+            chatBox.appendChild(questionDiv);
+            currentIndex++;
+            toggleSpinner(false);
+            scrollToBottom();
+          }, 500);
+        }
+
+        function showNextOnSelect(event) {
+          if (event.target.type === 'radio') {
+            setTimeout(() => showNextQuestion(), 300);
+          }
+        }
+
+        form.addEventListener('change', showNextOnSelect);
+        form.addEventListener('submit', function() {
+          toggleSpinner(true);
+          scrollToTop();
+        });
+
+        showNextQuestion();
+      </script>
+
+    {% elif profile %}
+      <div class="space-y-4 text-center">
+        <h2 class="text-2xl font-semibold text-purple-700">Your Personality Profile</h2>
+        <p class="text-lg text-gray-700">{{ profile }}</p>
+        <a href="/" class="inline-block mt-4 py-3 px-6 bg-purple-600 text-white rounded-lg text-lg font-semibold hover:bg-purple-700 transition">Start Over</a>
+      </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
